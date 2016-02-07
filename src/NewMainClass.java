@@ -59,15 +59,16 @@ class A{
     public void startPleaseNewThread(){
 	myThread = new B(iter, constructor);
 	isRunning = true;
-	System.out.println("Зашли в старт плиз нью тред, iter = " + iter);
-	myThread.run();
+	System.out.println("пїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅ пїЅпїЅпїЅ пїЅпїЅпїЅпїЅ, iter = " + iter);
+		myThread.start();
+//	myThread.run();
     }
     public void stopPleaseCurrentThread(){
 	iter = myThread.stopPlease();
-	System.out.println("Зашли в СТОП плиз карр. тред " + iter);
+	System.out.println("пїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅ. пїЅпїЅпїЅпїЅ " + iter);
 	isRunning = false;
     }
-    class B implements Runnable{
+    class B extends Thread{
 	int startIter;
 	int currentIter;
 	GraphConstructor2 constructor;
@@ -84,12 +85,13 @@ class A{
 	@Override
 	public void run(){
 	    //String path = "C:\\graphs\\";
-	    String path = "src\\";
-	    System.out.println("Зашли в run()");
+	    //String path = "src\\";
+	    String path = "./src/";
+	    System.out.println("пїЅпїЅпїЅпїЅпїЅ пїЅ run()");
 	    for(currentIter = startIter; currentIter<=6;currentIter++){
 		String endpath=path+currentIter+".txt";	
 		constructor.readGraphInfo(endpath);
-		System.out.println("Номер графа:");
+		System.out.println("пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ:");
 		constructor.fillGraph();
 		System.out.println(currentIter);
 		if(needToStop){
@@ -142,7 +144,7 @@ public class NewMainClass{
 			/*
 			MyThread myThread = new MyThread();
 			myThread.run();
-			myThread.setNeedToStop(!myThread.needToStop); //вызвать в handler-е при нажатии пробела
+			myThread.setNeedToStop(!myThread.needToStop); //пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅ handler-пїЅ пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ
 			*/
 			} 
 		catch(Exception exc){
@@ -185,9 +187,9 @@ class GraphConstructor2 {
 
 	}
 	
-	public Viewer showGraph(){ //здесь был войд
-		//Viewer viewer = graph.display();  //РАСКОММЕНТИТЬ СТРОКУ ЧТОБЫ ВСЕ РАБОТАЛО
-		this.viewer = new Viewer(graph, Viewer.ThreadingModel.GRAPH_IN_ANOTHER_THREAD); //Это все из цикла
+	public Viewer showGraph(){ //пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅ пїЅпїЅпїЅпїЅ
+		//Viewer viewer = graph.display();  //пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
+		this.viewer = new Viewer(graph, Viewer.ThreadingModel.GRAPH_IN_ANOTHER_THREAD); //пїЅпїЅпїЅ пїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅ
 		viewer.enableAutoLayout();
 		ViewPanel view = viewer.addDefaultView(false);
 		view.setSize(400, 400);
@@ -206,7 +208,7 @@ class GraphConstructor2 {
 		graph.addAttribute("ui.antialias");
 		
 		final A myA = new A(2, this);
-		myFrame.addKeyListener(new KeyListener(){
+		view.addKeyListener(new KeyListener(){
 			@Override
 			public void keyPressed(KeyEvent arg0) {
 				// TODO Auto-generated method stub
@@ -222,17 +224,17 @@ class GraphConstructor2 {
 			@Override
 			public void keyTyped(KeyEvent arg0) {
 				// TODO Auto-generated method stub
-			    System.out.println("НАЖАТА КЛАВИША");
+			    System.out.println("пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ");
 				if (arg0.getKeyChar() == 'a'){
 				    if(myA.isRunning){
-					System.out.println("А бежит, сейчас вызываем StopPleaseCurrentThread");
+					System.out.println("пїЅ пїЅпїЅпїЅпїЅпїЅ, пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ StopPleaseCurrentThread");
 					myA.stopPleaseCurrentThread();
 				    }
 				    else{
-					System.out.println("А простаивает, сейчас вызываем StartPleaseNewThread");
+					System.out.println("пїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ, пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ StartPleaseNewThread");
 					myA.startPleaseNewThread();
 				    }
-				    System.out.println("НАЖАТА КЛАВИША И ОНА ЧЕРТОВСКИ ХОРОША");
+				    System.out.println("пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ");
 				}
 			}
 		});
@@ -277,7 +279,7 @@ class GraphConstructor2 {
 		//-----------------------------------------------------------------------------------------
 				
 		
-		//удаление старых ребер
+		//пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ
 		if (prew_graphInfo != null){
 			for (int i = 0; i < prew_graphInfo.getConnectionsCount(); ++i){
 				Connection prew_con=prew_graphInfo.getConnectionAt(i);
@@ -302,10 +304,10 @@ class GraphConstructor2 {
 			}
 			
 		}
-		//закончили удалять ребра				
+		//пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ				
 		
 		
-		//удаление старых узлов
+		//пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ
 				if (prew_graphInfo != null){
 					for (int i = 0; i < prew_graphInfo.getNodesCount(); ++i){
 						String nodeName = prew_graphInfo.getNodeAt(i).getKey();
@@ -340,9 +342,9 @@ class GraphConstructor2 {
 						}
 					}
 				}
-				//закончили удалять старые узлы
+				//пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅ
 				
-				//заполнение новыми узлами
+				//пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ
 				int k=0;
 				for (int i = 0; i < graphInfo.getNodesCount(); ++i){
 					String nodeName = graphInfo.getNodeAt(i).getKey();
@@ -386,7 +388,7 @@ class GraphConstructor2 {
 					}
 				}
 				
-				//заполнение новыми ребрами		
+				//пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ		
 				for (int i = 0; i< graphInfo.getConnectionsCount(); ++i){
 					Connection con=graphInfo.getConnectionAt(i);
 					String edgeName=con.node1+"_"+con.node2;
@@ -415,7 +417,7 @@ class GraphConstructor2 {
 						
 					}
 				}
-				//закончили заполнять ребрами		
+				//пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ		
 		//--------------------------------------------------------------------------------------------------------------------
 		//--------------------------------------------------------------------------------------------------------------------
 		//System.out.println("////////////////////////////////////////////");
@@ -424,7 +426,7 @@ class GraphConstructor2 {
 			//System.out.println(node.getEdgeSet());
 		    if(node.getEdgeSet().isEmpty())
 		    {
-		    	graph.removeNode(node); //Пофиксить, чтобы удалял не только из графа но и из графинфо
+		    	graph.removeNode(node); //пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ, пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
 		    	graphInfo.deleteNode(node.getId().toString().toLowerCase());
 		    }
 		}
