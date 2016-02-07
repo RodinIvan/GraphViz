@@ -1,3 +1,4 @@
+import java.awt.event.WindowEvent;
 import java.io.BufferedReader;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -18,29 +19,16 @@ import java.util.*;
 
 import javafx.util.Pair;
 
+import javax.swing.*;
+
 public class CreatePlot extends ApplicationFrame{
-	
-	public CreatePlot(String conceptName, String pathFile, String applicationTitle , String chartTitle ) throws UnsupportedEncodingException, FileNotFoundException
-	 { 
-		 super(applicationTitle);
-		 JFreeChart lineChart = ChartFactory.createLineChart(
-		 chartTitle,
-		 "Weeks","Size of Concept",
-		 createDataset(conceptName, pathFile),
-		 PlotOrientation.VERTICAL,
-		 true,true,false
-		 );
-		 ChartPanel chartPanel = new ChartPanel( lineChart );
-		 chartPanel.setPreferredSize( new java.awt.Dimension( 580 , 367 ) );
-		 setContentPane( chartPanel );
-	 }
-	 private DefaultCategoryDataset createDataset(String conceptName, String pathFile) throws UnsupportedEncodingException, FileNotFoundException
+	private DefaultCategoryDataset createDataset(String conceptName, String pathFile) throws UnsupportedEncodingException, FileNotFoundException
 	 {
 		 DefaultCategoryDataset dataset = new DefaultCategoryDataset( );
 		 String unicodeString = "utf-8";
 		 BufferedReader reader;
 		 reader = new BufferedReader(new InputStreamReader(new FileInputStream(pathFile),unicodeString));
-		 
+
 		 try{
 	            reader.readLine();
 	            String currentLine;
@@ -57,7 +45,7 @@ public class CreatePlot extends ApplicationFrame{
 	                	break;
 	                }
 	            }
-	            
+
 	        }
 	        catch(IOException exc){
 	            throw new NullPointerException("IOException occurred");
@@ -75,12 +63,35 @@ public class CreatePlot extends ApplicationFrame{
 	        }
 		 return dataset;
 	 }
-	 
-	 public static void main( String[ ] args ) throws UnsupportedEncodingException, FileNotFoundException
-	 {
-		 CreatePlot chart = new CreatePlot("украинский_банк", "C:\\result.txt", "Size of Concept" ,"Size of" + " национальная валюта " + "VS weeks");
-		 chart.pack( );
-		 RefineryUtilities.centerFrameOnScreen( chart );
-		 chart.setVisible( true );
-	 }
+	public static void main( String[ ] args ) throws UnsupportedEncodingException, FileNotFoundException
+	{
+		CreatePlot chart = new CreatePlot("пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ_пїЅпїЅпїЅпїЅ", "C:\\result.txt", "Size of Concept" ,"Size of" + " пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ " + "VS weeks");
+		chart.pack( );
+		RefineryUtilities.centerFrameOnScreen( chart );
+		chart.setVisible( true );
 	}
+
+	@Override
+	public void windowClosing(WindowEvent event) {
+		if(event.getWindow() == this) {
+			this.dispose();
+		}
+
+	}
+
+	public CreatePlot(String conceptName, String pathFile, String applicationTitle , String chartTitle ) throws UnsupportedEncodingException, FileNotFoundException
+	{
+		super(applicationTitle);
+//		this.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
+		JFreeChart lineChart = ChartFactory.createLineChart(
+				chartTitle,
+				"Weeks","Size of Concept",
+				createDataset(conceptName, pathFile),
+				PlotOrientation.VERTICAL,
+				true,true,false
+		);
+		ChartPanel chartPanel = new ChartPanel( lineChart );
+		chartPanel.setPreferredSize( new java.awt.Dimension( 580 , 367 ) );
+		setContentPane( chartPanel );
+	}
+}
