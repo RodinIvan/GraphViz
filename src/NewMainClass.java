@@ -1,6 +1,5 @@
 import java.awt.GridLayout;
-import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
+import java.awt.event.*;
 import java.io.FileNotFoundException;
 
 
@@ -52,84 +51,54 @@ class A{
     B myThread;
     boolean isRunning;
     public A(int it, GraphConstructor2 constructor){
-	this.iter = it;
-	this.constructor = constructor;
-	this.isRunning = true;
+		this.iter = it;
+		this.constructor = constructor;
+		this.isRunning = false;
     }
     public void startPleaseNewThread(){
-	myThread = new B(iter, constructor);
-	isRunning = true;
-	System.out.println("����� � ����� ���� ��� ����, iter = " + iter);
+		myThread = new B(iter, constructor);
 		myThread.start();
-//	myThread.run();
+		isRunning = true;
+		System.out.println("����� � ����� ���� ��� ����, iter = " + iter);
     }
     public void stopPleaseCurrentThread(){
-	iter = myThread.stopPlease();
-	System.out.println("����� � ���� ���� ����. ���� " + iter);
-	isRunning = false;
+		iter = myThread.stopPlease();
+		isRunning = false;
+		System.out.println("����� � ���� ���� ����. ���� " + iter);
     }
-    class B extends Thread{
-	int startIter;
-	int currentIter;
-	GraphConstructor2 constructor;
-	boolean needToStop = false;
-	public B(int startIter, GraphConstructor2 constructor){
-	    this.startIter = startIter;
-	    this.constructor = constructor;
-	    isRunning = true;
-	}
-	public int stopPlease(){
-	    needToStop = true;
-	    return currentIter+1;
-	}
-	@Override
-	public void run(){
-	    //String path = "C:\\graphs\\";
-	    //String path = "src\\";
-	    String path = "./src/";
-	    System.out.println("����� � run()");
-	    for(currentIter = startIter; currentIter<=6;currentIter++){
-		String endpath=path+currentIter+".txt";	
-		constructor.readGraphInfo(endpath);
-		System.out.println("����� �����:");
-		constructor.fillGraph();
-		System.out.println(currentIter);
-		if(needToStop){
-		    isRunning = false;
-		    break;
-		}
-	    }
-	}
-    }
-}
 
-/*
-class MyThread implements Runnable{
-	boolean needToStop = false;
-	@Override
-	public void run() {
-		// TODO Auto-generated method stub
-		GraphConstructor2 constructor =  new GraphConstructor2();
-		String path="C:\\graphs\\";
-		
-		//Viewer v = constructor.showGraph();
-		constructor.showGraph();
-		for (int i=2; i<=5; i++){
-			//...
-			String endpath=path+i+".txt";	
-			constructor.readGraphInfo(endpath);
-			constructor.fillGraph();
-			if (needToStop){
-				//join();	
-			}
+    class B extends Thread{
+		int startIter;
+		int currentIter;
+		GraphConstructor2 constructor;
+		boolean needToStop = false;
+		public B(int startIter, GraphConstructor2 constructor){
+			this.startIter = startIter;
+			this.constructor = constructor;
 		}
-	}
-	public void setNeedToStop(boolean value){
-		this.needToStop = value;
-	}
-	public boolean getNeedToStop(){return needToStop;}
+		public int stopPlease(){
+			needToStop = true;
+			return currentIter+1;
+		}
+		@Override
+		public void run(){
+			String path = "./src/";
+			System.out.println("����� � run()");
+			isRunning = true;
+			for(currentIter = startIter; currentIter<=6;currentIter++){
+				String endpath=path+currentIter+".txt";
+				constructor.readGraphInfo(endpath);
+				System.out.println("����� �����:");
+				constructor.fillGraph();
+				System.out.println(currentIter);
+				if(needToStop){
+					break;
+				}
+			}
+			isRunning = false;
+		}
+    }
 }
-*/
 
 public class NewMainClass{
 	
@@ -206,8 +175,58 @@ class GraphConstructor2 {
 
 		graph.addAttribute("ui.quality");
 		graph.addAttribute("ui.antialias");
-		
+
 		final A myA = new A(2, this);
+
+		ViewerPipe fromSwing = viewer.newViewerPipe();
+		fromSwing.addSink(graph);
+		view.addMouseListener(new MouseListener() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				System.out.println("pressed");
+
+				for (Node node : graph) {
+					if (node.hasAttribute("ui.clicked")) {
+						try {
+							CreatePlot chart = new CreatePlot(node.getId(), "./src/result.txt", "Support of Concept" ,"Size of " + node.getId() + " VS weeks");
+							chart.pack( );
+							RefineryUtilities.positionFrameRandomly(chart);
+							//RefineryUtilities.centerFrameOnScreen( chart );
+							chart.setVisible( true );
+
+							node.removeAttribute("ui.clicked");
+						} catch (UnsupportedEncodingException exc) {
+							// TODO Auto-generated catch block
+							exc.printStackTrace();
+						} catch (FileNotFoundException exc) {
+							// TODO Auto-generated catch block
+							exc.printStackTrace();
+						}
+					}
+				}
+			}
+
+			@Override
+			public void mousePressed(MouseEvent e) {
+				fromSwing.pump();
+			}
+
+			@Override
+			public void mouseReleased(MouseEvent e) {
+
+			}
+
+			@Override
+			public void mouseEntered(MouseEvent e) {
+
+			}
+
+			@Override
+			public void mouseExited(MouseEvent e) {
+
+			}
+		});
+
 		view.addKeyListener(new KeyListener(){
 			@Override
 			public void keyPressed(KeyEvent arg0) {
@@ -227,14 +246,14 @@ class GraphConstructor2 {
 			    System.out.println("������ �������");
 				if (arg0.getKeyChar() == 'a'){
 				    if(myA.isRunning){
-					System.out.println("� �����, ������ �������� StopPleaseCurrentThread");
-					myA.stopPleaseCurrentThread();
+						System.out.println("� �����, ������ �������� StopPleaseCurrentThread");
+						myA.stopPleaseCurrentThread();
 				    }
 				    else{
-					System.out.println("� �����������, ������ �������� StartPleaseNewThread");
-					myA.startPleaseNewThread();
+						System.out.println("� �����������, ������ �������� StartPleaseNewThread");
+						myA.startPleaseNewThread();
 				    }
-				    System.out.println("������ ������� � ��� ��������� ������");
+					System.out.println("������ ������� � ��� ��������� ������");
 				}
 			}
 		});
@@ -440,30 +459,30 @@ class GraphConstructor2 {
 		
 		//System.out.println(this.graph.getNodeSet().isEmpty());
 		
-		/*
-		ViewerPipe fromSwing = viewer.newViewerPipe(); 
+
+		/*ViewerPipe fromSwing = viewer.newViewerPipe();
 		fromSwing.addSink(graph); 
 		int pressedNode = 0;
 		boolean loop = true;
-		while (loop&&(pressedNode<3)) { 
+		while (loop&&(pressedNode<3)) {
 			   try { 
 			    Thread.sleep(30); 
 			   } catch (InterruptedException e) { 
 			    e.printStackTrace(); 
 			   } 
 			   
-			   fromSwing.pump(); 
+			   fromSwing.pump();
 			   
 			   if (graph.hasAttribute("ui.viewClosed")) {
 				   System.out.println("PYSHPYSH");   
-			    loop = false; 
+			    loop = false;
 			   } else {
 				   for (Node node : this.graph) {
-					   if (node.hasAttribute("ui.clicked")) { 
+					   if (node.hasAttribute("ui.clicked")) {
 
 						 pressedNode+=1;
 						 try {
-							 CreatePlot chart = new CreatePlot(node.getId(), "C:\\result.txt", "Support of Concept" ,"Size of " + node.getId() + " VS weeks");
+							 CreatePlot chart = new CreatePlot(node.getId(), "./src/result.txt", "Support of Concept" ,"Size of " + node.getId() + " VS weeks");
 							 chart.pack( );
 							 RefineryUtilities.positionFrameRandomly(chart);
 							 //RefineryUtilities.centerFrameOnScreen( chart );
@@ -477,10 +496,11 @@ class GraphConstructor2 {
 							// TODO Auto-generated catch block
 							e.printStackTrace();
 						}
-					     loop = false; 
+					     loop = false;
 					   }
 				   }
 			    } 
-		}*/		
+		}
+		*/
 }
 }
