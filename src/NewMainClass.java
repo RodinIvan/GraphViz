@@ -1,49 +1,17 @@
 import java.awt.GridLayout;
 import java.awt.event.*;
 import java.io.FileNotFoundException;
-
-
 import java.io.UnsupportedEncodingException;
-
-
-
-
-
-
-
 import java.util.ArrayList;
-
 import javax.swing.JFrame;
 import javax.swing.JPanel;
-//-----------------
-import javax.swing.UIManager;
-
-import org.graphstream.stream.ProxyPipe; 
-import org.graphstream.stream.thread.ThreadProxyPipe; 
-import org.graphstream.ui.spriteManager.Sprite; 
-import org.graphstream.ui.spriteManager.SpriteManager;
-//------------------
-
-
-import javafx.util.Pair;
-
 import org.graphstream.graph.Graph;
 import org.graphstream.graph.Node;
 import org.graphstream.graph.implementations.SingleGraph;
-import org.graphstream.ui.layout.Layout;
-import org.graphstream.ui.layout.springbox.implementations.SpringBox;
 import org.graphstream.ui.swingViewer.ViewPanel;
 import org.graphstream.ui.view.Viewer;
-import org.graphstream.ui.view.ViewerListener;
 import org.graphstream.ui.view.ViewerPipe;
 import org.jfree.ui.RefineryUtilities;
-
-//****************//
-import org.graphstream.ui.swingViewer.*;
-
-import scala.util.Random;
-
-import com.sun.glass.ui.View;
 
 class A{
     int iter;
@@ -59,12 +27,12 @@ class A{
 		myThread = new B(iter, constructor);
 		myThread.start();
 		isRunning = true;
-		System.out.println("����� � ����� ���� ��� ����, iter = " + iter);
+		System.out.println("Call start new thread with iterator " + iter);
     }
     public void stopPleaseCurrentThread(){
 		iter = myThread.stopPlease();
 		isRunning = false;
-		System.out.println("����� � ���� ���� ����. ���� " + iter);
+		System.out.println("Call stop thread on iteration " + iter);
     }
 
     class B extends Thread{
@@ -83,14 +51,13 @@ class A{
 		@Override
 		public void run(){
 			String path = "./src/";
-			System.out.println("����� � run()");
+			System.out.println("new thread run()");
 			isRunning = true;
 			for(currentIter = startIter; currentIter<=6;currentIter++){
 				String endpath=path+currentIter+".txt";
 				constructor.readGraphInfo(endpath);
-				System.out.println("����� �����:");
 				constructor.fillGraph();
-				System.out.println(currentIter);
+				System.out.println("index of filled graph is: " + currentIter);
 				if(needToStop){
 					break;
 				}
@@ -110,11 +77,6 @@ public class NewMainClass{
 		try{
 			GraphConstructor2 constructor =  new GraphConstructor2();
 			constructor.showGraph();
-			/*
-			MyThread myThread = new MyThread();
-			myThread.run();
-			myThread.setNeedToStop(!myThread.needToStop); //������� � handler-� ��� ������� �������
-			*/
 			} 
 		catch(Exception exc){
 			exc.printStackTrace();
@@ -157,7 +119,6 @@ class GraphConstructor2 {
 	}
 	
 	public Viewer showGraph(){ //����� ��� ����
-		//Viewer viewer = graph.display();  //������������� ������ ����� ��� ��������
 		this.viewer = new Viewer(graph, Viewer.ThreadingModel.GRAPH_IN_ANOTHER_THREAD); //��� ��� �� �����
 		viewer.enableAutoLayout();
 		ViewPanel view = viewer.addDefaultView(false);
@@ -244,7 +205,7 @@ class GraphConstructor2 {
 			public void keyTyped(KeyEvent arg0) {
 				// TODO Auto-generated method stub
 			    System.out.println("������ �������");
-				if (arg0.getKeyChar() == 'a'){
+				if (arg0.getKeyChar() == KeyEvent.VK_SPACE){
 				    if(myA.isRunning){
 						System.out.println("� �����, ������ �������� StopPleaseCurrentThread");
 						myA.stopPleaseCurrentThread();
@@ -259,11 +220,6 @@ class GraphConstructor2 {
 		});
 		myA.startPleaseNewThread();
 		return null;
-		
-		
-		//Viewer viewer = new Viewer(graph, Viewer.ThreadingModel.GRAPH_IN_ANOTHER_THREAD);
-		//ViewPanel view = viewer.addDefaultView(false);
-		//return(view);
 	}
 
 	public void clearGraph(){
