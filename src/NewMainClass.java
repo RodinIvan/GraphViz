@@ -144,17 +144,13 @@ class GraphConstructor2 {
 		view.addMouseListener(new MouseListener() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
-				System.out.println("pressed");
-
 				for (Node node : graph) {
 					if (node.hasAttribute("ui.clicked")) {
 						try {
 							CreatePlot chart = new CreatePlot(node.getId(), "./src/result.txt", "Support of Concept" ,"Size of " + node.getId() + " VS weeks");
 							chart.pack( );
 							RefineryUtilities.positionFrameRandomly(chart);
-							//RefineryUtilities.centerFrameOnScreen( chart );
 							chart.setVisible( true );
-
 							node.removeAttribute("ui.clicked");
 						} catch (UnsupportedEncodingException exc) {
 							// TODO Auto-generated catch block
@@ -204,20 +200,17 @@ class GraphConstructor2 {
 			@Override
 			public void keyTyped(KeyEvent arg0) {
 				// TODO Auto-generated method stub
-			    System.out.println("������ �������");
 				if (arg0.getKeyChar() == KeyEvent.VK_SPACE){
 				    if(myA.isRunning){
-						System.out.println("� �����, ������ �������� StopPleaseCurrentThread");
 						myA.stopPleaseCurrentThread();
 				    }
 				    else{
-						System.out.println("� �����������, ������ �������� StartPleaseNewThread");
 						myA.startPleaseNewThread();
 				    }
-					System.out.println("������ ������� � ��� ��������� ������");
 				}
 			}
 		});
+
 		myA.startPleaseNewThread();
 		return null;
 	}
@@ -324,7 +317,6 @@ class GraphConstructor2 {
 				for (int i = 0; i < graphInfo.getNodesCount(); ++i){
 					String nodeName = graphInfo.getNodeAt(i).getKey();
 					Integer nodeSize = graphInfo.getNodeAt(i).getValue();
-					//System.out.println(nodeSize);
 					Boolean hasThisNode = false;
 					if (!(prew_graphInfo == null)){
 						for (int j = 0; j < prew_graphInfo.getNodesCount(); ++j){
@@ -341,13 +333,12 @@ class GraphConstructor2 {
 					}
 					if (!hasThisNode){
 						try {
-							graph.addNode(nodeName);//!!!!!!!!!!!!!!!!!!!!!
+							graph.addNode(nodeName);
 							if((nodesAdded!=null)&&(nodesAdded.contains(nodeName)))
 								graph.getNode(nodeName).setAttribute("ui.style", "stroke-color: black; stroke-width: 2px;");
 							try{Thread.sleep(sleepMsc);}
 							catch(Exception exc){exc.printStackTrace();}
 							graph.getNode(nodeName).setAttribute("col", (double) 0.0);
-							//graph.getNode(nodeName).setAttribute("ui.color", 0);
 							Integer sz=nodeSize-19;
 							String st = "size: "+sz.toString()+"px;";
 							graph.getNode(nodeName).setAttribute("ui.style", st);
@@ -362,8 +353,8 @@ class GraphConstructor2 {
 							
 					}
 				}
-				
-				//���������� ������ �������		
+
+				//���������� ������ �������
 				for (int i = 0; i< graphInfo.getConnectionsCount(); ++i){
 					Connection con=graphInfo.getConnectionAt(i);
 					String edgeName=con.node1+"_"+con.node2;
@@ -373,7 +364,6 @@ class GraphConstructor2 {
 							Connection prew_con=prew_graphInfo.getConnectionAt(j);
 							String prew_edgeName=prew_con.node1+"_"+prew_con.node2;
 							if (prew_edgeName.equals(edgeName)){
-							//if (prew_graphInfo.getNodeAt(j).getKey().equals(nodeName)){
 								hasThisEdge = true;
 								break;
 							}
@@ -381,10 +371,7 @@ class GraphConstructor2 {
 					}
 					if (!hasThisEdge){
 						try{
-							//if(con.getWeight()>0.9){
-								graph.addEdge(con.node1+"_"+con.node2, con.getNode1(),con.getNode2(), true);
-								//graph.getEdge(con.node1+"_"+con.node2).addAttribute("ui.label", con.weight);
-							//}
+							graph.addEdge(con.node1+"_"+con.node2, con.getNode1(),con.getNode2(), true);
 						}				
 						catch(Exception exc){
 							
@@ -392,71 +379,17 @@ class GraphConstructor2 {
 						
 					}
 				}
-				//��������� ��������� �������		
-		//--------------------------------------------------------------------------------------------------------------------
-		//--------------------------------------------------------------------------------------------------------------------
-		//System.out.println("////////////////////////////////////////////");
 		for (Node node : graph) {
-			//System.out.println(node.getId());
-			//System.out.println(node.getEdgeSet());
 		    if(node.getEdgeSet().isEmpty())
 		    {
-		    	graph.removeNode(node); //���������, ����� ������ �� ������ �� ����� �� � �� ��������
+		    	graph.removeNode(node);
 		    	graphInfo.deleteNode(node.getId().toString().toLowerCase());
 		    }
 		}
-		
 		try {
 		    Thread.sleep(3500);
 		} catch (InterruptedException e) {
-		    // TODO Auto-generated catch block
 		    e.printStackTrace();
 		}
-		
-		//System.out.println(this.graph.getNodeSet().isEmpty());
-		
-
-		/*ViewerPipe fromSwing = viewer.newViewerPipe();
-		fromSwing.addSink(graph); 
-		int pressedNode = 0;
-		boolean loop = true;
-		while (loop&&(pressedNode<3)) {
-			   try { 
-			    Thread.sleep(30); 
-			   } catch (InterruptedException e) { 
-			    e.printStackTrace(); 
-			   } 
-			   
-			   fromSwing.pump();
-			   
-			   if (graph.hasAttribute("ui.viewClosed")) {
-				   System.out.println("PYSHPYSH");   
-			    loop = false;
-			   } else {
-				   for (Node node : this.graph) {
-					   if (node.hasAttribute("ui.clicked")) {
-
-						 pressedNode+=1;
-						 try {
-							 CreatePlot chart = new CreatePlot(node.getId(), "./src/result.txt", "Support of Concept" ,"Size of " + node.getId() + " VS weeks");
-							 chart.pack( );
-							 RefineryUtilities.positionFrameRandomly(chart);
-							 //RefineryUtilities.centerFrameOnScreen( chart );
-							 chart.setVisible( true );
-							 
-							 node.removeAttribute("ui.clicked"); 
-						} catch (UnsupportedEncodingException e) {
-							// TODO Auto-generated catch block
-							e.printStackTrace();
-						} catch (FileNotFoundException e) {
-							// TODO Auto-generated catch block
-							e.printStackTrace();
-						}
-					     loop = false;
-					   }
-				   }
-			    } 
-		}
-		*/
 }
 }
