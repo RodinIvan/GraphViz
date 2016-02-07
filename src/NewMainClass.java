@@ -17,7 +17,7 @@ class A{
     int iter;
     GraphConstructor2 constructor;
     B myThread;
-    boolean isRunning;
+    private boolean isRunning;
     public A(int it, GraphConstructor2 constructor){
 		this.iter = it;
 		this.constructor = constructor;
@@ -26,14 +26,18 @@ class A{
     public void startPleaseNewThread(){
 		myThread = new B(iter, constructor);
 		myThread.start();
-		isRunning = true;
 		System.out.println("Call start new thread with iterator " + iter);
     }
     public void stopPleaseCurrentThread(){
 		iter = myThread.stopPlease();
-		isRunning = false;
-		System.out.println("Call stop thread on iteration " + iter);
+		System.out.println("Call stop thread. Next iteration is " + iter + ". Wait until end of current thread");
     }
+	public void setIsRunning(boolean value){
+		this.isRunning = value;
+	}
+	public boolean getIsRunning(){
+		return this.isRunning;
+	}
 
     class B extends Thread{
 		int startIter;
@@ -52,8 +56,8 @@ class A{
 		public void run(){
 			String path = "./src/";
 			System.out.println("new thread run()");
-			isRunning = true;
-			for(currentIter = startIter; currentIter<=6;currentIter++){
+			setIsRunning(true);
+			for(currentIter = startIter; currentIter<=26;currentIter++){
 				String endpath=path+currentIter+".txt";
 				constructor.readGraphInfo(endpath);
 				constructor.fillGraph();
@@ -62,7 +66,7 @@ class A{
 					break;
 				}
 			}
-			isRunning = false;
+			setIsRunning(false);
 		}
     }
 }
@@ -201,7 +205,7 @@ class GraphConstructor2 {
 			public void keyTyped(KeyEvent arg0) {
 				// TODO Auto-generated method stub
 				if (arg0.getKeyChar() == KeyEvent.VK_SPACE){
-				    if(myA.isRunning){
+				    if(myA.getIsRunning()){
 						myA.stopPleaseCurrentThread();
 				    }
 				    else{
